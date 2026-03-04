@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bowp7kvg37tyk"
+path="res://.godot/imported/cover-window.obj-0c671c8ba5db05d5499283e348a24bf5.mesh"
+
+[deps]
+
+files=["res://.godot/imported/cover-window.obj-0c671c8ba5db05d5499283e348a24bf5.mesh"]
+
+source_file="res://kenney_conveyor-kit/Models/OBJ format/cover-window.obj"
+dest_files=["res://.godot/imported/cover-window.obj-0c671c8ba5db05d5499283e348a24bf5.mesh", "res://.godot/imported/cover-window.obj-0c671c8ba5db05d5499283e348a24bf5.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false
