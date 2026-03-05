@@ -85,7 +85,6 @@ shape = SubResource("BoxShape3D_o177o")
 [node name="IronSource" parent="Builder" unique_id=1528772546 instance=ExtResource("10_oh8fy")]
 
 [node name="ConveyorBelt" parent="Builder" unique_id=1214890307 instance=ExtResource("10_tchaa")]
-belt_speed = 2.0
 
 [node name="View" type="Node3D" parent="." unique_id=2127604563]
 transform = Transform3D(0.707107, -0.40558, 0.579228, 0, 0.819152, 0.573576, -0.707107, -0.40558, 0.579228, 0, 0, 0)
