@@ -32,8 +32,8 @@ func _ready():
 		mesh_library.set_item_mesh_transform(id, Transform3D())
 		
 	
+	
 	update_structure()
-	update_cash()
 
 func _process(delta):
 	
@@ -41,10 +41,6 @@ func _process(delta):
 	
 	action_rotate() # Rotates selection 90 degrees
 	action_structure_toggle() # Toggles between structures
-	
-	action_save() # Saving
-	action_load() # Loading
-	action_load_resources() # Loading from resources
 	
 	# Map position based on mouse
 	
@@ -76,12 +72,16 @@ func get_mesh(packed_scene):
 func action_build(gridmap_position):
 	if Input.is_action_just_pressed("build"):
 		
-		var previous_tile = gridmap.get_cell_item(gridmap_position)
-		gridmap.set_cell_item(gridmap_position, index, gridmap.get_orthogonal_index_from_basis(selector.basis))
+		var camera3d = view_camera
+		var space_state = get_world_3d().direct_space_state
+		var from = camera3d.project_ray_origin(get_viewport().get_mouse_position())
+		var to = from + camera3d.project_ray_normal(get_viewport().get_mouse_position()) * 100000
 		
-		if previous_tile != index:
-			map.cash -= structures[index].price
-			update_cash()
+		var raycast = PhysicsRayQueryParameters3D.create(from,to)
+		var result = space_state.intersect_ray(raycast).collider
+		
+		if result:
+			print(result)
 			
 			Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
 
@@ -89,8 +89,17 @@ func action_build(gridmap_position):
 
 func action_demolish(gridmap_position):
 	if Input.is_action_just_pressed("demolish"):
-		if gridmap.get_cell_item(gridmap_position) != -1:
-			gridmap.set_cell_item(gridmap_position, -1)
+		var camera3d = $Camera3D
+		var space_state = get_world_3d().direct_space_state
+		var from = camera3d.project_ray_origin(get_viewport().get_mouse_position())
+		var to = from + camera3d.project_ray_normal(get_viewport().get_mouse_position()) * 10
+		
+		var raycast = PhysicsRayQueryParameters3D.create(from,to)
+		var result = space_state.intersect_ray(raycast).collider
+		
+		if result:
+			print(result)
+			
 			
 			Audio.play("sounds/removal-a.ogg, sounds/removal-b.ogg, sounds/removal-c.ogg, sounds/removal-d.ogg", -20)
 
@@ -106,11 +115,11 @@ func action_rotate():
 
 func action_structure_toggle():
 	if Input.is_action_just_pressed("structure_next"):
-		index = wrap(index + 1, 0, structures.size())
+		index = wrap(index + 1, 0, robots.size())
 		Audio.play("sounds/toggle.ogg", -30)
 	
 	if Input.is_action_just_pressed("structure_previous"):
-		index = wrap(index - 1, 0, structures.size())
+		index = wrap(index - 1, 0, robots.size())
 		Audio.play("sounds/toggle.ogg", -30)
 
 	update_structure()
@@ -123,56 +132,9 @@ func update_structure():
 		selector_container.remove_child(n)
 		
 	# Create new structure preview in selector
-	var _model = structures[index].model.instantiate()
+	var _model = robots[index].model.instantiate()
 	selector_container.add_child(_model)
 	_model.position.y += 0.25
-	
-func update_cash():
-	cash_display.text = "$" + str(map.cash)
+
 
 # Saving/load
-
-func action_save():
-	if Input.is_action_just_pressed("save"):
-		print("Saving map...")
-		
-		map.structures.clear()
-		for cell in gridmap.get_used_cells():
-			
-			var data_structure:DataStructure = DataStructure.new()
-			
-			data_structure.position = Vector2i(cell.x, cell.z)
-			data_structure.orientation = gridmap.get_cell_item_orientation(cell)
-			data_structure.structure = gridmap.get_cell_item(cell)
-			
-			map.structures.append(data_structure)
-			
-		ResourceSaver.save(map, "user://map.res")
-	
-func action_load():
-	if Input.is_action_just_pressed("load"):
-		print("Loading map...")
-		
-		gridmap.clear()
-		
-		map = ResourceLoader.load("user://map.res")
-		if not map:
-			map = DataMap.new()
-		for cell in map.structures:
-			gridmap.set_cell_item(Vector3i(cell.position.x, 0, cell.position.y), cell.structure, cell.orientation)
-			
-		update_cash()
-
-func action_load_resources():
-	if Input.is_action_just_pressed("load_resources"):
-		print("Loading map...")
-		
-		gridmap.clear()
-		
-		map = ResourceLoader.load("res://sample map/map.res")
-		if not map:
-			map = DataMap.new()
-		for cell in map.structures:
-			gridmap.set_cell_item(Vector3i(cell.position.x, 0, cell.position.y), cell.structure, cell.orientation)
-			
-		update_cash()
