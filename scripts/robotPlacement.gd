@@ -2,18 +2,21 @@ extends Node3D
 
 @export var robots: Array[Robot] = []
 
+var map: DataMap
 
+var index: int = 0 # Index of robot being built
 
-var map:DataMap
+enum PlacementMode { ROBOT, BELT }
+var placement_mode: PlacementMode = PlacementMode.ROBOT
 
-var index:int = 0 # Index of structure being built
-
-@export var selector:Node3D # The 'cursor'
-@export var selector_container:Node3D # Node that holds a preview of the structure
-@export var view_camera:Camera3D # Used for raycasting mouse
+@export var selector: Node3D
+@export var selector_container: Node3D
+@export var view_camera: Camera3D
 @export var selector_collider: Area3D
 
-var plane:Plane # Used for raycasting mouse
+@export var conveyor_belt_scene: PackedScene
+
+var plane: Plane
 
 # Item source creation
 const IronSourceScene = preload("res://scenes/iron_source.tscn")
@@ -30,61 +33,69 @@ func _ready():
 	print("view_camera = ", view_camera)
 	map = DataMap.new()
 	plane = Plane(Vector3.UP, Vector3.ZERO)
-	# Create new MeshLibrary dynamically, can also be done in the editor
-	# See: https://docs.godotengine.org/en/stable/tutorials/3d/using_gridmaps.html
-	
+
 	var mesh_library = MeshLibrary.new()
-	
+
 	for robot in robots:
-		
 		var id = mesh_library.get_last_unused_item_id()
-		
 		mesh_library.create_item(id)
 		mesh_library.set_item_mesh(id, get_mesh(robot.model))
 		mesh_library.set_item_mesh_transform(id, Transform3D())
-		
-	# Item Sources
+
 	for data in item_sources:
 		var source = IronSourceScene.instantiate()
 		add_child(source)
 		source.setup(data.pos, data.dir)
-	
-	
+
 	update_structure()
 
 func _process(delta):
-	
-	# Controls
-	
-	action_rotate() # Rotates selection 90 degrees
-	action_structure_toggle() # Toggles between structures
-	
-	# Map position based on mouse
-	
+	action_rotate()
+	action_structure_toggle()
+	action_toggle_placement_mode()
+
 	var world_position = plane.intersects_ray(
 		view_camera.project_ray_origin(get_viewport().get_mouse_position()),
 		view_camera.project_ray_normal(get_viewport().get_mouse_position()))
 
 	var gridmap_position = Vector3(round(world_position.x), 0, round(world_position.z))
 	selector.position = lerp(selector.position, gridmap_position, min(delta * 40, 1.0))
-	
+
 	action_build(gridmap_position)
 	action_demolish(gridmap_position)
 
-# Retrieve the mesh from a PackedScene, used for dynamically creating a MeshLibrary
+func action_toggle_placement_mode():
+	if Input.is_action_just_pressed("toggle_belt_mode"):
+		if placement_mode == PlacementMode.ROBOT:
+			placement_mode = PlacementMode.BELT
+			print("Switched to BELT placement mode")
+		else:
+			placement_mode = PlacementMode.ROBOT
+			print("Switched to ROBOT placement mode")
+		update_structure()
 
-func get_mesh(packed_scene):
-	var scene_state:SceneState = packed_scene.get_state()
-	for i in range(scene_state.get_node_count()):
-		if(scene_state.get_node_type(i) == "MeshInstance3D"):
-			for j in scene_state.get_node_property_count(i):
-				var prop_name = scene_state.get_node_property_name(i, j)
-				if prop_name == "mesh":
-					var prop_value = scene_state.get_node_property_value(i, j)
-					
-					return prop_value.duplicate()
-
-# Build (place) a structure
+func action_build(gridmap_position):
+	if Input.is_action_just_pressed("build"):
+		var overlapping = selector_collider.get_overlapping_bodies()
+		
+		var blocking = overlapping.filter(func(body):
+			return not selector_container.is_ancestor_of(body)
+			)
+			
+		if placement_mode == PlacementMode.BELT:
+			if not blocking:
+				build_belt(gridmap_position)
+		else:
+			var currentRobot = robots[index]
+			if not blocking:
+				build_robot(currentRobot, gridmap_position)
+			else:
+				var result = blocking[0]
+				var previousRobot = result.get_parent().get("Robot")
+				if previousRobot != currentRobot:
+					result.get_parent().queue_free()
+					build_robot(currentRobot, gridmap_position)
+					Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
 
 func build_robot(currentRobot, gridmap_position):
 	var robot = preload("res://scenes/robot.tscn").instantiate()
@@ -93,71 +104,72 @@ func build_robot(currentRobot, gridmap_position):
 	robot.transform.origin = gridmap_position
 	robot.rotation = selector.rotation
 
-func action_build(gridmap_position):
-	if Input.is_action_just_pressed("build"):
-		var overlapping = selector_collider.get_overlapping_bodies()
-		var currentRobot = robots[index]
-		
-		if not overlapping:
-			build_robot(currentRobot, gridmap_position)
-		else:
-			var result = overlapping[0]
-			var layer = result.get_collision_layer()
-			var previousRobot = result.get_parent().get("Robot")
-			print(overlapping.size())
-			if previousRobot != currentRobot:
-				result.get_parent().queue_free()
-				build_robot(currentRobot, gridmap_position)
-			
-				Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
+func build_belt(gridmap_position):
+	
+	if conveyor_belt_scene == null:
+		push_error("conveyor_belt_scene is not assigned in the Inspector!")
+		return
 
-# Demolish (remove) a structure
+	var belt = conveyor_belt_scene.instantiate()
+	add_child(belt)
+	belt.transform.origin = gridmap_position
+	belt.rotation = selector.rotation
+
+	# Derive belt direction from the selector's facing direction (forward = -Z rotated)
+	var direction = -selector.global_transform.basis.z
+	belt.init_belt(direction)
+
+	Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
 
 func action_demolish(gridmap_position):
 	if Input.is_action_just_pressed("demolish"):
-		var overlapping = selector_collider.get_overlapping_bodies()	
+		var overlapping = selector_collider.get_overlapping_bodies()
 		if overlapping:
 			var result = overlapping[0]
 			var layer = result.get_collision_layer()
 			if layer == 2:
 				result.get_parent().queue_free()
-			
 			Audio.play("sounds/removal-a.ogg, sounds/removal-b.ogg, sounds/removal-c.ogg, sounds/removal-d.ogg", -20)
-
-# Rotates the 'cursor' 90 degrees
 
 func action_rotate():
 	if Input.is_action_just_pressed("rotate"):
 		selector.rotate_y(deg_to_rad(90))
-		
 		Audio.play("sounds/rotate.ogg", -30)
 
-
-
-# Toggle between structures to build
-
 func action_structure_toggle():
+	if placement_mode != PlacementMode.ROBOT:
+		return
+
 	if Input.is_action_just_pressed("structure_next"):
 		index = wrap(index + 1, 0, robots.size())
 		Audio.play("sounds/toggle.ogg", -30)
-	
+
 	if Input.is_action_just_pressed("structure_previous"):
 		index = wrap(index - 1, 0, robots.size())
 		Audio.play("sounds/toggle.ogg", -30)
 
 	update_structure()
 
-# Update the structure visual in the 'cursor'
-
 func update_structure():
-	# Clear previous structure preview in selector
 	for n in selector_container.get_children():
 		selector_container.remove_child(n)
-		
-	# Create new structure preview in selector
-	var _model = robots[index].model.instantiate()
-	selector_container.add_child(_model)
-	_model.position.y += 0.25
 
+	if placement_mode == PlacementMode.BELT:
+		if conveyor_belt_scene != null:
+			var preview = conveyor_belt_scene.instantiate()
+			selector_container.add_child(preview)
+			preview.position.y += 0.25
+	else:
+		var _model = robots[index].model.instantiate()
+		selector_container.add_child(_model)
+		_model.position.y += 0.25
 
-# Saving/load
+func get_mesh(packed_scene):
+	var scene_state: SceneState = packed_scene.get_state()
+	for i in range(scene_state.get_node_count()):
+		if scene_state.get_node_type(i) == "MeshInstance3D":
+			for j in scene_state.get_node_property_count(i):
+				var prop_name = scene_state.get_node_property_name(i, j)
+				if prop_name == "mesh":
+					var prop_value = scene_state.get_node_property_value(i, j)
+					return prop_value.duplicate()

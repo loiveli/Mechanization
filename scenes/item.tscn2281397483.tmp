@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://chv5uak3hnr40"]
 
 [ext_resource type="Script" uid="uid://cfw8cymxtng5m" path="res://scenes/item.gd" id="1_4gq7n"]
-[ext_resource type="PackedScene" uid="uid://dflxxh04xafeu" path="res://kenney_conveyor-kit/Models/FBX format/box-small.fbx" id="2_s8enn"]
+[ext_resource type="PackedScene" uid="uid://uilvf543afpu" path="res://kenney_conveyor-kit/Models/FBX format/arrow.fbx" id="2_s8enn"]
 
 [node name="item" type="CharacterBody3D" unique_id=682457109]
+collision_layer = 3
+collision_mask = 3
 script = ExtResource("1_4gq7n")
 model = ExtResource("2_s8enn")
