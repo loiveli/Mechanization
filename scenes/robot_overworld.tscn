@@ -1,11 +1,10 @@
 [gd_scene format=3 uid="uid://bfh175lbuwqbv"]
 
-[ext_resource type="Script" uid="uid://b66i11hp1v6kv" path="res://scripts/robotPlacement.gd" id="1_bqalp"]
+[ext_resource type="Script" uid="uid://b66i11hp1v6kv" path="res://scripts/robotBuilder.gd" id="1_bqalp"]
 [ext_resource type="Script" uid="uid://b4i7dfy6u3e8w" path="res://scripts/structure.gd" id="2_qo4ly"]
 [ext_resource type="PackedScene" uid="uid://cmudscy7k4ber" path="res://kenney_conveyor-kit/Models/FBX format/conveyor-sides.fbx" id="3_v005l"]
 [ext_resource type="Script" uid="uid://b8q0ek5wna3j2" path="res://scripts/RobotAttributes.gd" id="4_o177o"]
 [ext_resource type="PackedScene" uid="uid://5xetj5lntw3u" path="res://kenney_conveyor-kit/Models/FBX format/robot-arm-a.fbx" id="5_o177o"]
-[ext_resource type="PackedScene" uid="uid://3s54g4qkcnc0" path="res://scenes/robot.tscn" id="7_o177o"]
 [ext_resource type="Texture2D" uid="uid://cbk07cxgshg26" path="res://sprites/selector.png" id="18_xkdpo"]
 [ext_resource type="Environment" uid="uid://jbptgqvstei3" path="res://scenes/main-environment.tres" id="20_6tb5w"]
 [ext_resource type="Texture2D" uid="uid://bng0d1sou7c8a" path="res://sprites/coin.png" id="21_ibhs6"]
@@ -41,7 +40,7 @@ stats = SubResource("Resource_tchaa")
 metadata/_custom_type_script = "uid://b4i7dfy6u3e8w"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_o177o"]
-size = Vector3(0.8, 0.8, 0.5)
+size = Vector3(0.8, 1, 0.8)
 
 [sub_resource type="LabelSettings" id="LabelSettings_q176i"]
 font = ExtResource("22_wvfx1")
@@ -74,8 +73,6 @@ collision_mask = 2
 
 [node name="SelectorCollisionShape" type="CollisionShape3D" parent="Builder/Selector/SelectorCollider" unique_id=4313590]
 shape = SubResource("BoxShape3D_o177o")
-
-[node name="Robot" parent="Builder" unique_id=360460994 instance=ExtResource("7_o177o")]
 
 [node name="View" type="Node3D" parent="." unique_id=2127604563]
 transform = Transform3D(0.707107, -0.40558, 0.579228, 0, 0.819152, 0.573576, -0.707107, -0.40558, 0.579228, 0, 0, 0)

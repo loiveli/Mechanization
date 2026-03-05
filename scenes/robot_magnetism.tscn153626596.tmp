@@ -146,5 +146,3 @@ autoplay = true
 
 [node name="GroundCollider" type="CollisionShape3D" parent="Ground" unique_id=806358262]
 shape = SubResource("WorldBoundaryShape3D_v005l")
-
-[connection signal="item_clicked" from="CanvasLayer/Top/BotInventory" to="RobotBuilder" method="_on_bot_inventory_item_clicked"]

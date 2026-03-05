@@ -1,10 +1,12 @@
 extends Node3D
 
 @export var robots: Array[Robot] = []
+@export var robotInventory: Dictionary[Robot,int]
+@export var conveyorBelt: Robot
 
 var map:DataMap
 
-var index:int = 0 # Index of structure being built
+var index:int = -1 # Index of structure being built
 
 @export var selector:Node3D # The 'cursor'
 @export var selector_container:Node3D # Node that holds a preview of the structure
@@ -14,6 +16,7 @@ var index:int = 0 # Index of structure being built
 var plane:Plane # Used for raycasting mouse
 
 func _ready():
+	robotInventory[conveyorBelt] = 1000
 	
 	map = DataMap.new()
 	plane = Plane(Vector3.UP, Vector3.ZERO)
@@ -23,7 +26,7 @@ func _ready():
 	var mesh_library = MeshLibrary.new()
 	
 	for robot in robots:
-		
+		robotInventory[robot] = 1
 		var id = mesh_library.get_last_unused_item_id()
 		
 		mesh_library.create_item(id)
@@ -31,27 +34,31 @@ func _ready():
 		mesh_library.set_item_mesh_transform(id, Transform3D())
 		
 	
+func _unhandled_input(event: InputEvent) -> void:
+	var gridmap_position = getGridmapPosition()
+	action_build(gridmap_position)
 	
-	update_structure()
-
-func _process(delta):
-	
-	# Controls
-	
-	action_rotate() # Rotates selection 90 degrees
-	action_structure_toggle() # Toggles between structures
-	
-	# Map position based on mouse
-	
+func getGridmapPosition():
 	var world_position = plane.intersects_ray(
 		view_camera.project_ray_origin(get_viewport().get_mouse_position()),
 		view_camera.project_ray_normal(get_viewport().get_mouse_position()))
 
 	var gridmap_position = Vector3(round(world_position.x), 0, round(world_position.z))
+	return gridmap_position
+
+func _process(delta):
+	
+	# Controls
+	var gridmap_position = getGridmapPosition()
+	action_rotate() # Rotates selection 90 degrees
+	 # Toggles between structures
+	
+	# Map position based on mouse
+	
+	
 	selector.position = lerp(selector.position, gridmap_position, min(delta * 40, 1.0))
 	
-	action_build(gridmap_position)
-	action_demolish(gridmap_position)
+	action_demolish()
 
 # Retrieve the mesh from a PackedScene, used for dynamically creating a MeshLibrary
 
@@ -76,17 +83,16 @@ func build_robot(currentRobot, gridmap_position):
 	robot.rotation = selector.rotation
 
 func action_build(gridmap_position):
+	if index<0:
+		return
 	if Input.is_action_just_pressed("build"):
 		var overlapping = selector_collider.get_overlapping_bodies()
-		var currentRobot = robots[index]
-		
+		var currentRobot = robotInventory.keys()[index]
 		if not overlapping:
 			build_robot(currentRobot, gridmap_position)
 		else:
 			var result = overlapping[0]
-			var layer = result.get_collision_layer()
 			var previousRobot = result.get_parent().get("Robot")
-			print(overlapping.size())
 			if previousRobot != currentRobot:
 				result.get_parent().queue_free()
 				build_robot(currentRobot, gridmap_position)
@@ -95,7 +101,7 @@ func action_build(gridmap_position):
 
 # Demolish (remove) a structure
 
-func action_demolish(gridmap_position):
+func action_demolish():
 	if Input.is_action_just_pressed("demolish"):
 		var overlapping = selector_collider.get_overlapping_bodies()	
 		if overlapping:
@@ -129,15 +135,20 @@ func action_structure_toggle():
 
 # Update the structure visual in the 'cursor'
 
-func update_structure():
+func update_structure(robotIndex = index):
 	# Clear previous structure preview in selector
+	index = robotIndex
 	for n in selector_container.get_children():
 		selector_container.remove_child(n)
 		
 	# Create new structure preview in selector
-	var _model = robots[index].model.instantiate()
+	var _model = robotInventory.keys()[index].model.instantiate()
 	selector_container.add_child(_model)
 	_model.position.y += 0.25
-
+	print(index)
 
 # Saving/load
+
+
+func _on_bot_inventory_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+	update_structure(index)
