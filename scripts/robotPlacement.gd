@@ -83,10 +83,15 @@ func action_build(gridmap_position):
 		var currentRobot = robots[index]
 		
 		if result:
-			if currentRobot not in result:
-				print(currentRobot)
+			var layer = result.get_collision_layer()
+			if layer != 2:
+				var robot = preload("res://scenes/robot.tscn").instantiate()
+				robot.initRobot(currentRobot)
+				add_child(robot)
+				robot.transform.origin = gridmap_position
+				robot.rotation = selector.rotation
 			
-			print(result)
+			print(layer)
 			
 			Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
 
