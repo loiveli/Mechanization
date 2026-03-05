@@ -9,7 +9,7 @@ var index:int = 0 # Index of structure being built
 @export var selector:Node3D # The 'cursor'
 @export var selector_container:Node3D # Node that holds a preview of the structure
 @export var view_camera:Camera3D # Used for raycasting mouse
-
+@export var selector_collider: Area3D
 
 var plane:Plane # Used for raycasting mouse
 
@@ -17,7 +17,6 @@ func _ready():
 	
 	map = DataMap.new()
 	plane = Plane(Vector3.UP, Vector3.ZERO)
-	
 	# Create new MeshLibrary dynamically, can also be done in the editor
 	# See: https://docs.godotengine.org/en/stable/tutorials/3d/using_gridmaps.html
 	
@@ -78,23 +77,17 @@ func build_robot(currentRobot, gridmap_position):
 
 func action_build(gridmap_position):
 	if Input.is_action_just_pressed("build"):
-		
-		var camera3d = view_camera
-		var space_state = get_world_3d().direct_space_state
-		var from = camera3d.project_ray_origin(get_viewport().get_mouse_position())
-		var to = from + camera3d.project_ray_normal(get_viewport().get_mouse_position()) * 100000
-		
-		var raycast = PhysicsRayQueryParameters3D.create(from,to)
-		var result = space_state.intersect_ray(raycast).collider
-		
+		var overlapping = selector_collider.get_overlapping_bodies()
 		var currentRobot = robots[index]
 		
-		if result:
+		if not overlapping:
+			build_robot(currentRobot, gridmap_position)
+		else:
+			var result = overlapping[0]
 			var layer = result.get_collision_layer()
 			var previousRobot = result.get_parent().get("Robot")
-			if layer != 2:
-				build_robot(currentRobot, gridmap_position)
-			elif previousRobot != currentRobot:
+			print(overlapping.size())
+			if previousRobot != currentRobot:
 				result.get_parent().queue_free()
 				build_robot(currentRobot, gridmap_position)
 			
@@ -104,17 +97,9 @@ func action_build(gridmap_position):
 
 func action_demolish(gridmap_position):
 	if Input.is_action_just_pressed("demolish"):
-		var camera3d = view_camera
-		var space_state = get_world_3d().direct_space_state
-		var from = camera3d.project_ray_origin(get_viewport().get_mouse_position())
-		var to = from + camera3d.project_ray_normal(get_viewport().get_mouse_position()) * 100000
-		
-		var raycast = PhysicsRayQueryParameters3D.create(from,to)
-		var result = space_state.intersect_ray(raycast).collider
-		
-
-		
-		if result:
+		var overlapping = selector_collider.get_overlapping_bodies()	
+		if overlapping:
+			var result = overlapping[0]
 			var layer = result.get_collision_layer()
 			if layer == 2:
 				result.get_parent().queue_free()

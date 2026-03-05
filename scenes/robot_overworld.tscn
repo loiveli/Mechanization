@@ -40,6 +40,9 @@ model = ExtResource("5_o177o")
 stats = SubResource("Resource_tchaa")
 metadata/_custom_type_script = "uid://b4i7dfy6u3e8w"
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_o177o"]
+size = Vector3(0.8, 0.8, 0.5)
+
 [sub_resource type="LabelSettings" id="LabelSettings_q176i"]
 font = ExtResource("22_wvfx1")
 font_size = 24
@@ -49,12 +52,13 @@ shadow_color = Color(0, 0, 0, 0.392157)
 
 [node name="Main" type="Node3D" unique_id=442690186]
 
-[node name="Builder" type="Node3D" parent="." unique_id=989834716 node_paths=PackedStringArray("selector", "selector_container", "view_camera")]
+[node name="Builder" type="Node3D" parent="." unique_id=989834716 node_paths=PackedStringArray("selector", "selector_container", "view_camera", "selector_collider")]
 script = ExtResource("1_bqalp")
 robots = Array[ExtResource("2_qo4ly")]([SubResource("Resource_opm8o"), SubResource("Resource_oh8fy")])
 selector = NodePath("Selector")
 selector_container = NodePath("Selector/Container")
 view_camera = NodePath("../View/Camera")
+selector_collider = NodePath("Selector/SelectorCollider")
 
 [node name="Selector" type="Node3D" parent="Builder" unique_id=61547494]
 
@@ -63,6 +67,13 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.0
 texture = ExtResource("18_xkdpo")
 
 [node name="Container" type="Node3D" parent="Builder/Selector" unique_id=208692768]
+
+[node name="SelectorCollider" type="Area3D" parent="Builder/Selector" unique_id=1643639339]
+collision_layer = 0
+collision_mask = 2
+
+[node name="SelectorCollisionShape" type="CollisionShape3D" parent="Builder/Selector/SelectorCollider" unique_id=4313590]
+shape = SubResource("BoxShape3D_o177o")
 
 [node name="Robot" parent="Builder" unique_id=360460994 instance=ExtResource("7_o177o")]
 
