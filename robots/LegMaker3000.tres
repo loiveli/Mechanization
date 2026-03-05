@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Robot" format=3 uid="uid://cca1f7dci0gbb"]
+
+[ext_resource type="Script" uid="uid://b8q0ek5wna3j2" path="res://scripts/RobotAttributes.gd" id="1_tdbi3"]
+[ext_resource type="PackedScene" uid="uid://tdsgqnwjimwc" path="res://kenney_conveyor-kit/Models/GLB format/robot-arm-a.glb" id="2_nrt6v"]
+[ext_resource type="Script" uid="uid://bnep7ssian6ke" path="res://scripts/Robot.gd" id="3_rl3ap"]
+
+[sub_resource type="Resource" id="Resource_6se72"]
+script = ExtResource("1_tdbi3")
+name = "LegMaker 3000"
+outputSpeed = 1
+output = 1
+input = Array[int]([0])
+metadata/_custom_type_script = "uid://b8q0ek5wna3j2"
+
+[resource]
+script = ExtResource("3_rl3ap")
+model = ExtResource("2_nrt6v")
+attributes = SubResource("Resource_6se72")
+metadata/_custom_type_script = "uid://bnep7ssian6ke"

@@ -5,6 +5,9 @@ extends Node3D
 
 @export var robotInventory: Dictionary[Robot,int]
 @export var conveyorBelt: Robot
+var robotList: Array[Node3D]
+
+signal robot_spawned
 
 var map:DataMap
 
@@ -14,6 +17,8 @@ var index:int = -1 # Index of structure being built
 @export var selector_container:Node3D # Node that holds a preview of the structure
 @export var view_camera:Camera3D # Used for raycasting mouse
 @export var selector_collider: Area3D
+
+
 
 var plane:Plane # Used for raycasting mouse
 
@@ -27,9 +32,6 @@ var item_sources = [
 ]
 
 func _ready():
-	print("selector_container = ", selector_container)
-	print("selector = ", selector)
-	print("view_camera = ", view_camera)
 	robotInventory[conveyorBelt] = 1000
 	
 	map = DataMap.new()
@@ -41,11 +43,7 @@ func _ready():
 	
 	for robot in robots:
 		robotInventory[robot] = 1
-		var id = mesh_library.get_last_unused_item_id()
 		
-		mesh_library.create_item(id)
-		mesh_library.set_item_mesh(id, get_mesh(robot.model))
-		mesh_library.set_item_mesh_transform(id, Transform3D())
 		
 	# Item Sources
 	for data in item_sources:
@@ -98,6 +96,9 @@ func build_robot(currentRobot, gridmap_position):
 	var robot = preload("res://scenes/robot.tscn").instantiate()
 	robot.initRobot(currentRobot)
 	add_child(robot)
+	robotList.append(robot) 
+	for bot in robotList:
+		bot.calculateMagentism()
 	robot.transform.origin = gridmap_position
 	robot.rotation = selector.rotation
 
@@ -113,6 +114,7 @@ func action_build(gridmap_position):
 			var result = overlapping[0]
 			var previousRobot = result.get_parent().get("Robot")
 			if previousRobot != currentRobot:
+				robotList.erase(result.get_parent())
 				result.get_parent().queue_free()
 				build_robot(currentRobot, gridmap_position)
 			
@@ -127,6 +129,7 @@ func action_demolish():
 			var result = overlapping[0]
 			var layer = result.get_collision_layer()
 			if layer == 2:
+				robotList.erase(result.get_parent())
 				result.get_parent().queue_free()
 			
 			Audio.play("sounds/removal-a.ogg, sounds/removal-b.ogg, sounds/removal-c.ogg, sounds/removal-d.ogg", -20)
@@ -166,7 +169,6 @@ func update_structure(robotIndex = index):
 	var _model = robotInventory.keys()[index].model.instantiate()
 	selector_container.add_child(_model)
 	_model.position.y += 0.25
-	print(index)
 
 # Saving/load
 
