@@ -1,0 +1,145 @@
+[gd_scene format=3 uid="uid://dvfap23lc55u7"]
+
+[ext_resource type="Script" uid="uid://b66i11hp1v6kv" path="res://scripts/robotPlacement.gd" id="1_pspos"]
+[ext_resource type="Script" uid="uid://b4i7dfy6u3e8w" path="res://scripts/structure.gd" id="2_yutgn"]
+[ext_resource type="PackedScene" uid="uid://cmudscy7k4ber" path="res://kenney_conveyor-kit/Models/FBX format/conveyor-sides.fbx" id="3_fxepc"]
+[ext_resource type="Script" uid="uid://b8q0ek5wna3j2" path="res://scripts/RobotAttributes.gd" id="4_bc2ja"]
+[ext_resource type="PackedScene" uid="uid://5xetj5lntw3u" path="res://kenney_conveyor-kit/Models/FBX format/robot-arm-a.fbx" id="5_6se72"]
+[ext_resource type="Texture2D" uid="uid://cbk07cxgshg26" path="res://sprites/selector.png" id="6_805dx"]
+[ext_resource type="PackedScene" uid="uid://3s54g4qkcnc0" path="res://scenes/robot.tscn" id="7_dwpnh"]
+[ext_resource type="Environment" uid="uid://jbptgqvstei3" path="res://scenes/main-environment.tres" id="8_5qykb"]
+[ext_resource type="Texture2D" uid="uid://bng0d1sou7c8a" path="res://sprites/coin.png" id="9_kfghr"]
+[ext_resource type="FontFile" uid="uid://d0cxd77jybrcn" path="res://fonts/lilita_one_regular.ttf" id="10_qnypn"]
+[ext_resource type="Texture2D" uid="uid://ciwbdik3tmxtp" path="res://sprites/instructions.png" id="11_8x6vv"]
+[ext_resource type="AudioStream" uid="uid://wvfsgkl8qob6" path="res://sounds/ambience.ogg" id="12_mqxck"]
+
+[sub_resource type="Resource" id="Resource_4rwsw"]
+script = ExtResource("4_bc2ja")
+name = "test"
+outputSpeed = 1
+metadata/_custom_type_script = "uid://b8q0ek5wna3j2"
+
+[sub_resource type="Resource" id="Resource_opm8o"]
+script = ExtResource("2_yutgn")
+model = ExtResource("3_fxepc")
+stats = SubResource("Resource_4rwsw")
+metadata/_custom_type_script = "uid://b4i7dfy6u3e8w"
+
+[sub_resource type="Resource" id="Resource_tchaa"]
+script = ExtResource("4_bc2ja")
+name = "test2"
+outputSpeed = 1
+output = 2
+input = 1
+personality = 2
+metadata/_custom_type_script = "uid://b8q0ek5wna3j2"
+
+[sub_resource type="Resource" id="Resource_oh8fy"]
+script = ExtResource("2_yutgn")
+model = ExtResource("5_6se72")
+stats = SubResource("Resource_tchaa")
+metadata/_custom_type_script = "uid://b4i7dfy6u3e8w"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o177o"]
+size = Vector3(0.8, 0.8, 0.5)
+
+[sub_resource type="LabelSettings" id="LabelSettings_q176i"]
+font = ExtResource("10_qnypn")
+font_size = 24
+shadow_color = Color(0, 0, 0, 0.392157)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_v005l"]
+
+[node name="Main" type="Node3D" unique_id=442690186]
+
+[node name="Builder" type="Node3D" parent="." unique_id=989834716 node_paths=PackedStringArray("selector", "selector_container", "view_camera", "selector_collider")]
+script = ExtResource("1_pspos")
+robots = Array[ExtResource("2_yutgn")]([SubResource("Resource_opm8o"), SubResource("Resource_oh8fy")])
+selector = NodePath("Selector")
+selector_container = NodePath("Selector/Container")
+view_camera = NodePath("../View/Camera")
+selector_collider = NodePath("Selector/SelectorCollider")
+
+[node name="Selector" type="Node3D" parent="Builder" unique_id=61547494]
+
+[node name="Sprite" type="Sprite3D" parent="Builder/Selector" unique_id=857442206]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.06, 0)
+texture = ExtResource("6_805dx")
+
+[node name="Container" type="Node3D" parent="Builder/Selector" unique_id=208692768]
+
+[node name="SelectorCollider" type="Area3D" parent="Builder/Selector" unique_id=1643639339]
+collision_layer = 0
+collision_mask = 2
+
+[node name="SelectorCollisionShape" type="CollisionShape3D" parent="Builder/Selector/SelectorCollider" unique_id=4313590]
+shape = SubResource("BoxShape3D_o177o")
+
+[node name="Robot" parent="Builder" unique_id=360460994 instance=ExtResource("7_dwpnh")]
+
+[node name="View" type="Node3D" parent="." unique_id=2127604563]
+transform = Transform3D(0.707107, -0.40558, 0.579228, 0, 0.819152, 0.573576, -0.707107, -0.40558, 0.579228, 0, 0, 0)
+
+[node name="Camera" type="Camera3D" parent="View" unique_id=711116194]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30)
+environment = ExtResource("8_5qykb")
+fov = 20.0
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=937724770]
+transform = Transform3D(-0.422618, -0.694272, 0.582563, 0, 0.642788, 0.766044, -0.906308, 0.323744, -0.271654, 0, 0, 0)
+shadow_enabled = true
+shadow_opacity = 0.75
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=412031828]
+
+[node name="Top" type="Control" parent="CanvasLayer" unique_id=66906172]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CashIcon" type="TextureRect" parent="CanvasLayer/Top" unique_id=324347105]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 24.0
+offset_right = 148.0
+offset_bottom = 152.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("9_kfghr")
+
+[node name="Cash" type="Label" parent="CanvasLayer/Top" unique_id=2088071621]
+layout_mode = 0
+offset_left = 69.0
+offset_top = 27.0
+offset_right = 270.0
+offset_bottom = 101.0
+text = "$10,000"
+label_settings = SubResource("LabelSettings_q176i")
+
+[node name="Bottom" type="Control" parent="CanvasLayer" unique_id=996531729]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -648.0
+offset_bottom = -648.0
+grow_vertical = 0
+
+[node name="Instructions" type="TextureRect" parent="CanvasLayer/Bottom" unique_id=933792014]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 375.0
+offset_right = 344.0
+offset_bottom = 887.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("11_8x6vv")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=806914263]
+stream = ExtResource("12_mqxck")
+volume_db = -30.0
+autoplay = true
+
+[node name="Ground" type="StaticBody3D" parent="." unique_id=965199721]
+
+[node name="GroundCollider" type="CollisionShape3D" parent="Ground" unique_id=806358262]
+shape = SubResource("WorldBoundaryShape3D_v005l")
