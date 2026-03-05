@@ -80,7 +80,12 @@ func action_build(gridmap_position):
 		var raycast = PhysicsRayQueryParameters3D.create(from,to)
 		var result = space_state.intersect_ray(raycast).collider
 		
+		var currentRobot = robots[index]
+		
 		if result:
+			if currentRobot not in result:
+				print(currentRobot)
+			
 			print(result)
 			
 			Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
