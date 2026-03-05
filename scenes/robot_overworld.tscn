@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://bfh175lbuwqbv"]
+
+[ext_resource type="Script" uid="uid://76g8ejmdibal" path="res://scripts/builder.gd" id="1_cn7me"]
+[ext_resource type="Script" uid="uid://b4i7dfy6u3e8w" path="res://scripts/structure.gd" id="2_qo4ly"]
+[ext_resource type="Resource" uid="uid://dv14kkhb6umkv" path="res://structures/road-straight.tres" id="3_ckcox"]
+[ext_resource type="Resource" uid="uid://mxrnqinnsqnt" path="res://structures/road-straight-lightposts.tres" id="4_ecdt3"]
+[ext_resource type="Resource" uid="uid://d2jplegnkl6u2" path="res://structures/road-corner.tres" id="5_0rfxr"]
+[ext_resource type="Resource" uid="uid://cqvwy36htu81" path="res://structures/road-split.tres" id="6_tbb7q"]
+[ext_resource type="Resource" uid="uid://dveu4dnue0d54" path="res://structures/road-intersection.tres" id="7_g6i0g"]
+[ext_resource type="Resource" uid="uid://ch8vtcpine1lc" path="res://structures/pavement.tres" id="8_5b2qa"]
+[ext_resource type="Resource" uid="uid://dqqe3iofnleup" path="res://structures/pavement-fountain.tres" id="9_eory5"]
+[ext_resource type="Resource" uid="uid://cntgl86ianngh" path="res://structures/building-small-a.tres" id="10_1nmcq"]
+[ext_resource type="Resource" uid="uid://c5fveedgvunju" path="res://structures/building-small-b.tres" id="11_g0rst"]
+[ext_resource type="Resource" uid="uid://bh65eqgid4kxy" path="res://structures/building-small-c.tres" id="12_03km2"]
+[ext_resource type="Resource" uid="uid://dtal0tl2ee336" path="res://structures/building-small-d.tres" id="13_xykj0"]
+[ext_resource type="Resource" uid="uid://bqb6g3t0tebno" path="res://structures/building-garage.tres" id="14_cpx7j"]
+[ext_resource type="Resource" uid="uid://tm532uesguhk" path="res://structures/grass.tres" id="15_5gtdw"]
+[ext_resource type="Resource" uid="uid://ccb475jeg7ym5" path="res://structures/grass-trees.tres" id="16_pbkg6"]
+[ext_resource type="Resource" uid="uid://y6jafhfnhbrp" path="res://structures/grass-trees-tall.tres" id="17_lmcuj"]
+[ext_resource type="Texture2D" uid="uid://cbk07cxgshg26" path="res://sprites/selector.png" id="18_xkdpo"]
+[ext_resource type="Script" uid="uid://dec71yx4xpg2c" path="res://scripts/view.gd" id="19_y88q6"]
+[ext_resource type="Environment" uid="uid://jbptgqvstei3" path="res://scenes/main-environment.tres" id="20_6tb5w"]
+[ext_resource type="Texture2D" uid="uid://bng0d1sou7c8a" path="res://sprites/coin.png" id="21_ibhs6"]
+[ext_resource type="FontFile" uid="uid://d0cxd77jybrcn" path="res://fonts/lilita_one_regular.ttf" id="22_wvfx1"]
+[ext_resource type="Texture2D" uid="uid://ciwbdik3tmxtp" path="res://sprites/instructions.png" id="23_ivwf6"]
+[ext_resource type="AudioStream" uid="uid://wvfsgkl8qob6" path="res://sounds/ambience.ogg" id="24_30a6n"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_q176i"]
+font = ExtResource("22_wvfx1")
+font_size = 24
+shadow_color = Color(0, 0, 0, 0.392157)
+
+[node name="Main" type="Node3D" unique_id=442690186]
+
+[node name="Builder" type="Node3D" parent="." unique_id=989834716 node_paths=PackedStringArray("selector", "selector_container", "view_camera", "gridmap", "cash_display")]
+script = ExtResource("1_cn7me")
+structures = Array[ExtResource("2_qo4ly")]([ExtResource("3_ckcox"), ExtResource("4_ecdt3"), ExtResource("5_0rfxr"), ExtResource("6_tbb7q"), ExtResource("7_g6i0g"), ExtResource("8_5b2qa"), ExtResource("9_eory5"), ExtResource("10_1nmcq"), ExtResource("11_g0rst"), ExtResource("12_03km2"), ExtResource("13_xykj0"), ExtResource("14_cpx7j"), ExtResource("15_5gtdw"), ExtResource("16_pbkg6"), ExtResource("17_lmcuj")])
+selector = NodePath("Selector")
+selector_container = NodePath("Selector/Container")
+view_camera = NodePath("../View/Camera")
+gridmap = NodePath("")
+cash_display = NodePath("../CanvasLayer/Top/Cash")
+
+[node name="Selector" type="Node3D" parent="Builder" unique_id=61547494]
+
+[node name="Sprite" type="Sprite3D" parent="Builder/Selector" unique_id=857442206]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.06, 0)
+texture = ExtResource("18_xkdpo")
+
+[node name="Container" type="Node3D" parent="Builder/Selector" unique_id=208692768]
+
+[node name="View" type="Node3D" parent="." unique_id=2127604563]
+transform = Transform3D(0.707107, -0.40558, 0.579228, 0, 0.819152, 0.573576, -0.707107, -0.40558, 0.579228, 0, 0, 0)
+script = ExtResource("19_y88q6")
+
+[node name="Camera" type="Camera3D" parent="View" unique_id=711116194]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30)
+environment = ExtResource("20_6tb5w")
+fov = 20.0
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=937724770]
+transform = Transform3D(-0.422618, -0.694272, 0.582563, 0, 0.642788, 0.766044, -0.906308, 0.323744, -0.271654, 0, 0, 0)
+shadow_enabled = true
+shadow_opacity = 0.75
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=412031828]
+
+[node name="Top" type="Control" parent="CanvasLayer" unique_id=66906172]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CashIcon" type="TextureRect" parent="CanvasLayer/Top" unique_id=324347105]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 24.0
+offset_right = 148.0
+offset_bottom = 152.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("21_ibhs6")
+
+[node name="Cash" type="Label" parent="CanvasLayer/Top" unique_id=2088071621]
+layout_mode = 0
+offset_left = 69.0
+offset_top = 27.0
+offset_right = 270.0
+offset_bottom = 101.0
+text = "$10,000"
+label_settings = SubResource("LabelSettings_q176i")
+
+[node name="Bottom" type="Control" parent="CanvasLayer" unique_id=996531729]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -648.0
+offset_bottom = -648.0
+grow_vertical = 0
+
+[node name="Instructions" type="TextureRect" parent="CanvasLayer/Bottom" unique_id=933792014]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 375.0
+offset_right = 344.0
+offset_bottom = 887.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("23_ivwf6")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=806914263]
+stream = ExtResource("24_30a6n")
+volume_db = -30.0
+autoplay = true

@@ -1,6 +1,6 @@
 extends Node3D
 
-@export var structures: Array[Structure] = []
+@export var robots: Array[Robot] = []
 
 var map:DataMap
 
@@ -9,8 +9,7 @@ var index:int = 0 # Index of structure being built
 @export var selector:Node3D # The 'cursor'
 @export var selector_container:Node3D # Node that holds a preview of the structure
 @export var view_camera:Camera3D # Used for raycasting mouse
-@export var gridmap:GridMap
-@export var cash_display:Label
+
 
 var plane:Plane # Used for raycasting mouse
 
@@ -24,15 +23,14 @@ func _ready():
 	
 	var mesh_library = MeshLibrary.new()
 	
-	for structure in structures:
+	for robot in robots:
 		
 		var id = mesh_library.get_last_unused_item_id()
 		
 		mesh_library.create_item(id)
-		mesh_library.set_item_mesh(id, get_mesh(structure.model))
+		mesh_library.set_item_mesh(id, get_mesh(robot.model))
 		mesh_library.set_item_mesh_transform(id, Transform3D())
 		
-	gridmap.mesh_library = mesh_library
 	
 	update_structure()
 	update_cash()
