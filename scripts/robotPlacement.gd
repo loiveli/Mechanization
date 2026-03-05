@@ -69,6 +69,13 @@ func get_mesh(packed_scene):
 
 # Build (place) a structure
 
+func build_robot(currentRobot, gridmap_position):
+	var robot = preload("res://scenes/robot.tscn").instantiate()
+	robot.initRobot(currentRobot)
+	add_child(robot)
+	robot.transform.origin = gridmap_position
+	robot.rotation = selector.rotation
+
 func action_build(gridmap_position):
 	if Input.is_action_just_pressed("build"):
 		
@@ -84,32 +91,33 @@ func action_build(gridmap_position):
 		
 		if result:
 			var layer = result.get_collision_layer()
+			var previousRobot = result.get_parent().get("Robot")
 			if layer != 2:
-				var robot = preload("res://scenes/robot.tscn").instantiate()
-				robot.initRobot(currentRobot)
-				add_child(robot)
-				robot.transform.origin = gridmap_position
-				robot.rotation = selector.rotation
+				build_robot(currentRobot, gridmap_position)
+			elif previousRobot != currentRobot:
+				result.get_parent().queue_free()
+				build_robot(currentRobot, gridmap_position)
 			
-			print(layer)
-			
-			Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
+				Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
 
 # Demolish (remove) a structure
 
 func action_demolish(gridmap_position):
 	if Input.is_action_just_pressed("demolish"):
-		var camera3d = $Camera3D
+		var camera3d = view_camera
 		var space_state = get_world_3d().direct_space_state
 		var from = camera3d.project_ray_origin(get_viewport().get_mouse_position())
-		var to = from + camera3d.project_ray_normal(get_viewport().get_mouse_position()) * 10
+		var to = from + camera3d.project_ray_normal(get_viewport().get_mouse_position()) * 100000
 		
 		var raycast = PhysicsRayQueryParameters3D.create(from,to)
 		var result = space_state.intersect_ray(raycast).collider
 		
+
+		
 		if result:
-			print(result)
-			
+			var layer = result.get_collision_layer()
+			if layer == 2:
+				result.get_parent().queue_free()
 			
 			Audio.play("sounds/removal-a.ogg, sounds/removal-b.ogg, sounds/removal-c.ogg, sounds/removal-d.ogg", -20)
 
