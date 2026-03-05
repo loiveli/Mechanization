@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cejqqmoabvvnl"]
+
+[ext_resource type="Script" uid="uid://cehgxox2wmj2o" path="res://conveyor_belt.gd" id="1_xuwby"]
+[ext_resource type="PackedScene" uid="uid://pg1ijf88433q" path="res://kenney_conveyor-kit/Models/FBX format/conveyor-bars.fbx" id="2_xh8bf"]
+
+[node name="ConveyorBelt" type="Node3D" unique_id=1214890307]
+script = ExtResource("1_xuwby")
+model = ExtResource("2_xh8bf")
+belt_speed = null

@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://chv5uak3hnr40"]
+
+[ext_resource type="Script" uid="uid://cfw8cymxtng5m" path="res://scenes/item.gd" id="1_4gq7n"]
+[ext_resource type="PackedScene" uid="uid://uilvf543afpu" path="res://kenney_conveyor-kit/Models/FBX format/arrow.fbx" id="2_s8enn"]
+
+[node name="item" type="Node3D" unique_id=744977598]
+script = ExtResource("1_4gq7n")
+model = ExtResource("2_s8enn")

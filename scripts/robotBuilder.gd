@@ -1,6 +1,8 @@
 extends Node3D
 
 @export var robots: Array[Robot] = []
+
+
 @export var robotInventory: Dictionary[Robot,int]
 @export var conveyorBelt: Robot
 
@@ -15,7 +17,19 @@ var index:int = -1 # Index of structure being built
 
 var plane:Plane # Used for raycasting mouse
 
+# Item source creation
+const IronSourceScene = preload("res://scenes/iron_source.tscn")
+const ItemEntityScene = preload("res://scenes/item.tscn")
+const IronResource = preload("res://resources/iron.tres")
+
+var item_sources = [
+	{ "pos": Vector3(-4, 0, 0), "dir": Vector3(0, 0, -1) },
+]
+
 func _ready():
+	print("selector_container = ", selector_container)
+	print("selector = ", selector)
+	print("view_camera = ", view_camera)
 	robotInventory[conveyorBelt] = 1000
 	
 	map = DataMap.new()
@@ -33,6 +47,11 @@ func _ready():
 		mesh_library.set_item_mesh(id, get_mesh(robot.model))
 		mesh_library.set_item_mesh_transform(id, Transform3D())
 		
+	# Item Sources
+	for data in item_sources:
+		var source = IronSourceScene.instantiate()
+		add_child(source)
+		source.setup(data.pos, data.dir)
 	
 func _unhandled_input(event: InputEvent) -> void:
 	var gridmap_position = getGridmapPosition()
@@ -119,6 +138,8 @@ func action_rotate():
 		selector.rotate_y(deg_to_rad(90))
 		
 		Audio.play("sounds/rotate.ogg", -30)
+
+
 
 # Toggle between structures to build
 

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bfh175lbuwqbv"]
 
-[ext_resource type="Script" uid="uid://b66i11hp1v6kv" path="res://scripts/robotBuilder.gd" id="1_bqalp"]
+[ext_resource type="Script" uid="uid://b66i11hp1v6kv" path="res://scripts/robotPlacement.gd" id="1_bqalp"]
 [ext_resource type="Script" uid="uid://b4i7dfy6u3e8w" path="res://scripts/structure.gd" id="2_qo4ly"]
 [ext_resource type="PackedScene" uid="uid://cmudscy7k4ber" path="res://kenney_conveyor-kit/Models/FBX format/conveyor-sides.fbx" id="3_v005l"]
 [ext_resource type="Script" uid="uid://b8q0ek5wna3j2" path="res://scripts/RobotAttributes.gd" id="4_o177o"]
@@ -44,7 +44,7 @@ stats = SubResource("Resource_tchaa")
 metadata/_custom_type_script = "uid://b4i7dfy6u3e8w"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_o177o"]
-size = Vector3(0.8, 1, 0.8)
+size = Vector3(0.8, 0.8, 0.5)
 
 [sub_resource type="LabelSettings" id="LabelSettings_q176i"]
 font = ExtResource("22_wvfx1")
@@ -85,7 +85,7 @@ shape = SubResource("BoxShape3D_o177o")
 [node name="IronSource" parent="Builder" unique_id=1528772546 instance=ExtResource("10_oh8fy")]
 
 [node name="ConveyorBelt" parent="Builder" unique_id=1214890307 instance=ExtResource("10_tchaa")]
-belt_speed = 2.0
+model = null
 
 [node name="View" type="Node3D" parent="." unique_id=2127604563]
 transform = Transform3D(0.707107, -0.40558, 0.579228, 0, 0.819152, 0.573576, -0.707107, -0.40558, 0.579228, 0, 0, 0)
