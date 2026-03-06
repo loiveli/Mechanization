@@ -78,15 +78,18 @@ func _draw_direction_arrow() -> void:
 func _physics_process(delta: float) -> void:
 	if area == null:
 		return
-
 	var current_bodies = area.get_overlapping_bodies()
 	
 	for body in tracked_items:
+		if not is_instance_valid(body):
+			continue
 		if body not in current_bodies:
 			if body.has_method("exit_conveyor"):
 				body.exit_conveyor()
 				
 	for body in current_bodies:
+		if not is_instance_valid(body):
+			continue
 		if body.has_method("enter_conveyor"):
 			body.enter_conveyor(belt_direction)
 			body.move_speed = belt_speed
