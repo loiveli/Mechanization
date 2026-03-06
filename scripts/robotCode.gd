@@ -7,6 +7,8 @@ extends Node3D
 @export var angryReaction: PackedScene
 @export var happyReaction: PackedScene
 @export var particleMagnet: GPUParticlesAttractorBox3D
+@export var robotText: MeshInstance3D
+@export var camera: Camera3D
 
 var personality: RobotAttributes.personalityTrait
 var outputSpeed: int
@@ -27,12 +29,20 @@ func _ready():
 	
 	var builder = get_tree().get_first_node_in_group("builder")
 	await get_tree().physics_frame
-	
+	await get_tree().process_frame
+	camera = get_tree().get_first_node_in_group("Camera")
 	var rival = self.robot.attributes.rivalPersonality
 	var matching = self.robot.attributes.matchPersonality
 	print(rival, matching)
 	
-
+func _process(delta: float) -> void:
+	
+	if camera:
+		var point = camera.global_transform.origin
+		robotText.look_at(Vector3(point.x, robotText.global_position.y, point.z), Vector3.UP)
+		robotText.rotate_y(PI)
+	else:
+		camera = get_tree().get_first_node_in_group("Camera")
 
 func spawnParticlesToward(target: Node3D, scene: PackedScene):
 	if scene == null:
@@ -93,6 +103,18 @@ func calculateMagnetism(allRobots: Array):
 			elif personalityTrait == matching:
 				spawnParticlesToward(machine, happyReaction)
 				magnetNumber += 2
-
+				
 	magnetModifier = magnetNumber
+	
+	var rival_name = RobotAttributes.personalityTrait.keys()[rival]
+	var match_name = RobotAttributes.personalityTrait.keys()[matching]
+	
+	if magnetModifier <0:
+		robotText.visible = true
+		(robotText.mesh as TextMesh).text = "These %s bots are really overloading my microprocessor" % [rival_name]
+	elif magnetModifier >0:
+		robotText.visible = true
+		(robotText.mesh as TextMesh).text = "I am really enjoying the positive resonance from these %s bots" % [match_name]
+	else:
+		robotText.visible = false
 	robot.attributes.outputSpeed = baseOutputSpeed + magnetModifier

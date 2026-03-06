@@ -30,6 +30,10 @@ Audio="*res://scripts/audio.gd"
 
 movie_writer/movie_file="D:/Godot/recording.avi"
 
+[global_group]
+
+Camera=""
+
 [input]
 
 build={
