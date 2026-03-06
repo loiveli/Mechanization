@@ -1,11 +1,10 @@
 [gd_scene format=3 uid="uid://xp0xvua5mghw"]
 
-[ext_resource type="ArrayMesh" uid="uid://kb84n6ge0lm8" path="res://kenney_conveyor-kit/Models/OBJ format/arrow-basic.obj" id="1_68ikj"]
+[ext_resource type="ArrayMesh" uid="uid://usa7r58or44e" path="res://robots/grass.tres" id="1_68ikj"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ujkns"]
-lifetime_randomness = 0
 direction = Vector3(0, 0, 1)
-spread = 0
+spread = 0.0
 initial_velocity_max = 5.0
 gravity = Vector3(0, 0, 0)
 scale_min = 0.05
@@ -13,8 +12,8 @@ scale_max = 0.3
 color = Color(0.35308796, 0.5548372, 1.347661e-06, 1)
 turbulence_enabled = true
 turbulence_noise_strength = 0.05
-turbulence_noise_scale = 10
-turbulence_noise_speed_random = 100
+turbulence_noise_scale = 10.0
+turbulence_noise_speed_random = 100.0
 
 [node name="HappyReaction" type="GPUParticles3D" unique_id=252967306]
 amount = 20
