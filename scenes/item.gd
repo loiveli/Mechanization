@@ -21,21 +21,6 @@ func setup(world_position: Vector3) -> void:
 	add_child(area)
 
 func _physics_process(delta: float) -> void:
-	if _collected or not on_conveyor:
-		return
-	position += conveyor_direction.normalized() * move_speed * delta
-
-	var shape = CollisionShape3D.new()
-	shape.shape = mesh_instance.mesh.create_convex_shape()
-	add_child(shape)
-	
-	var area = Area3D.new()
-	var area_shape = CollisionShape3D.new()
-	area_shape.shape = mesh_instance.mesh.create_convex_shape()
-	area.add_child(area_shape)
-	add_child(area)
-
-func _physics_process(delta: float) -> void:
 	if _collected:
 		return
 
