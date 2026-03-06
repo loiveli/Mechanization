@@ -26,14 +26,19 @@ func setup(world_position: Vector3, eject_direction: Vector3) -> void:
 func _process(delta: float) -> void:
 	if _eject_direction == Vector3.ZERO:
 		return
+<<<<<<< HEAD
 	_timer += delta
 	if _timer >= spawn_interval:
 		_timer = 0.0
+=======
+	if Input.is_action_just_pressed("spawn_object"):
+>>>>>>> automation
 		_spawn_item()
 
 func _spawn_item() -> void:
 	var entity = item_scene.instantiate()
 	get_tree().current_scene.add_child(entity)
+<<<<<<< HEAD
 	entity.global_position = global_position + Vector3(0, 0.1, 0)
 	entity.rotation.y = randf_range(0.0, PI * 2.0)
 
@@ -41,6 +46,10 @@ func _spawn_item() -> void:
 		entity.enter_conveyor(_eject_direction)
 
 # Pulls the first Mesh resource out of a PackedScene — mirrors robotPlacement.gd
+=======
+	entity.setup(global_position + Vector3(0, 2, 0))
+
+>>>>>>> automation
 func get_mesh(packed_scene: PackedScene) -> Mesh:
 	var scene_state: SceneState = packed_scene.get_state()
 	for i in range(scene_state.get_node_count()):
