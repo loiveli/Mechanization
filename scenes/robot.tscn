@@ -19,6 +19,11 @@ size = Vector3(1.9, 1, 1.9)
 [sub_resource type="BoxShape3D" id="BoxShape3D_rcrfe"]
 size = Vector3(2.9, 1, 2.9)
 
+[sub_resource type="TextMesh" id="TextMesh_xwnim"]
+text = "These open source bots are really overloading my microprocessor"
+font_size = 30
+autowrap_mode = 1
+
 [node name="Robot" type="Node3D" unique_id=360460994 node_paths=PackedStringArray("selfCollider", "nearCollider", "farCollider", "particleMagnet")]
 script = ExtResource("1_rcrfe")
 robot = SubResource("Resource_5wdcj")
@@ -62,3 +67,7 @@ attenuation = 0.012259123
 directionality = 1.0
 cull_mask = 4294966272
 size = Vector3(30, 30, 30)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=833255762]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mesh = SubResource("TextMesh_xwnim")

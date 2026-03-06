@@ -140,6 +140,7 @@ func action_build(gridmap_position):
 				var result = blocking[0]
 				var previousRobot = result.get_parent().get("Robot")
 				if previousRobot != currentRobot:
+					robotList.erase(result.get_parent())
 					result.get_parent().queue_free()
 					build_robot(currentRobot, gridmap_position)
 					Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
