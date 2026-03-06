@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://br1c6c4d2qy1s" path="res://scenes/iron_source.gd" id="1_14vpv"]
 [ext_resource type="PackedScene" uid="uid://c4ccm2qr5wa58" path="res://models/road-corner.glb" id="2_m20s2"]
-[ext_resource type="PackedScene" uid="uid://t358wsu5ud8" path="res://kenney_conveyor-kit/Models/GLB format/arrow.glb" id="3_f18h1"]
+[ext_resource type="PackedScene" uid="uid://chv5uak3hnr40" path="res://scenes/item.tscn" id="3_m20s2"]
 
 [node name="IronSource" type="Node3D" unique_id=1528772546]
 script = ExtResource("1_14vpv")
 model = ExtResource("2_m20s2")
-item_scene = ExtResource("3_f18h1")
+item_scene = ExtResource("3_m20s2")

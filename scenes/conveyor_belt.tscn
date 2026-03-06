@@ -6,4 +6,3 @@
 [node name="ConveyorBelt" type="Node3D" unique_id=1214890307]
 script = ExtResource("1_xuwby")
 model = ExtResource("2_xh8bf")
-belt_speed = null
