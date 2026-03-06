@@ -38,9 +38,6 @@ func _spawn_item() -> void:
 	entity.global_position = global_position + Vector3(0, 0.1, 0)
 	entity.rotation.y = randf_range(0.0, PI * 2.0)
 
-	if entity.has_method("enter_conveyor"):
-		entity.enter_conveyor(_eject_direction)
-
 # Pulls the first Mesh resource out of a PackedScene — mirrors robotPlacement.gd
 	entity.setup(global_position + Vector3(0, 2, 0))
 
