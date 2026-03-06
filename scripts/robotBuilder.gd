@@ -5,7 +5,7 @@ extends Node3D
 
 
 @export var robotInventory: Dictionary[Robot,int]
-@export var conveyorBelt: Robot
+#@export var conveyorBelt: Robot
 var robotList: Array[Node3D]
 
 signal robot_spawned
@@ -25,11 +25,12 @@ var placement_mode: PlacementMode = PlacementMode.ROBOT
 @export var view_camera: Camera3D
 @export var selector_collider: Area3D
 
+#@export var conveyor_belt_scene: Camera3D
+
+
 
 
 var plane:Plane # Used for raycasting mouse
-@export var conveyor_belt_scene: PackedScene
-
 
 
 # Item source creation
@@ -37,12 +38,17 @@ const IronSourceScene = preload("res://scenes/iron_source.tscn")
 const ItemEntityScene = preload("res://scenes/item.tscn")
 const IronResource = preload("res://resources/iron.tres")
 
+var conveyor_belt_scene = preload("res://scenes/conveyor_belt.tscn")
+
+
 var item_sources = [
 	{ "pos": Vector3(-4, 0, 0), "dir": Vector3(0, 0, -1) },
 ]
 
 func _ready():
-	robotInventory[conveyorBelt] = 1000
+	print(get_path())
+	print(conveyor_belt_scene)
+	#robotInventory[conveyor_belt_scene] = 1000
 	print("selector_container = ", selector_container)
 	print("selector = ", selector)
 	print("view_camera = ", view_camera)
@@ -149,7 +155,7 @@ func build_robot(currentRobot, gridmap_position):
 
 
 func build_belt(gridmap_position):
-	
+	print(conveyor_belt_scene)
 	if conveyor_belt_scene == null:
 		push_error("conveyor_belt_scene is not assigned in the Inspector!")
 		return
