@@ -63,7 +63,6 @@ func _physics_process(delta: float) -> void:
 	for area in overlap:
 		if area.is_in_group("Selector"):
 			selector_overlap = true
-			print("Selected")
 			break
 	robotText.visible = selector_overlap
 
