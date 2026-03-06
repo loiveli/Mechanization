@@ -49,7 +49,7 @@ func spawnParticlesToward(target: Node3D, scene: PackedScene):
 	var localDir = global_transform.basis.inverse() * dir
 	var distance = global_position.distance_to(target.global_position)
 	var speed = 4.0
-	mat.direction = dir
+	mat.direction = localDir
 	mat.spread = 0.0
 	mat.initial_velocity_min = speed
 	mat.initial_velocity_max = speed
