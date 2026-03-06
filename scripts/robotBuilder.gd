@@ -2,10 +2,7 @@ extends Node3D
 
 @export var robots: Array[Robot] = []
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD:scripts/robotBuilder.gd
->>>>>>> c3f420336f7f7c3b90f5e9f22b2308da524fdea7
+
 
 @export var robotInventory: Dictionary[Robot,int]
 @export var conveyorBelt: Robot
@@ -13,13 +10,6 @@ var robotList: Array[Node3D]
 
 signal robot_spawned
 
-
-<<<<<<< HEAD
-@export var robotInventory: Dictionary[Robot,int]
-@export var conveyorBelt: Robot
-var robotList: Array[Node3D]
-
-signal robot_spawned
 
 var map: DataMap
 
@@ -40,23 +30,7 @@ var placement_mode: PlacementMode = PlacementMode.ROBOT
 var plane:Plane # Used for raycasting mouse
 @export var conveyor_belt_scene: PackedScene
 
-var plane: Plane
 
-# Item source creation
-const IronSourceScene = preload("res://scenes/iron_source.tscn")
-const ItemEntityScene = preload("res://scenes/item.tscn")
-const IronResource = preload("res://resources/iron.tres")
-
-var item_sources = [
-	{ "pos": Vector3(-4, 0, 0), "dir": Vector3(0, 0, -1) },
-]
-
-
-func _ready():
-	robotInventory[conveyorBelt] = 1000
-	print("selector_container = ", selector_container)
-	print("selector = ", selector)
-	print("view_camera = ", view_camera)
 
 # Item source creation
 const IronSourceScene = preload("res://scenes/iron_source.tscn")
@@ -102,18 +76,14 @@ func _unhandled_input(event: InputEvent) -> void:
 func getGridmapPosition():
 
 
-	update_structure()
-
-func _process(delta):
-	action_rotate()
-	action_structure_toggle()
-	action_toggle_placement_mode()
 	var world_position = plane.intersects_ray(
 		view_camera.project_ray_origin(get_viewport().get_mouse_position()),
 		view_camera.project_ray_normal(get_viewport().get_mouse_position()))
 
 	var gridmap_position = Vector3(round(world_position.x), 0, round(world_position.z))
 	return gridmap_position
+
+
 
 func _process(delta):
 	action_toggle_placement_mode()
@@ -142,7 +112,7 @@ func action_toggle_placement_mode():
 		else:
 			placement_mode = PlacementMode.ROBOT
 			print("Switched to ROBOT placement mode")
-		update_structure()
+		update_structure(index)
 
 func action_build(gridmap_position):
 	if Input.is_action_just_pressed("build"):
@@ -195,29 +165,8 @@ func build_belt(gridmap_position):
 
 	Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
 
-func action_build(gridmap_position):
-	if index<0:
-		return
-	if Input.is_action_just_pressed("build"):
-		var overlapping = selector_collider.get_overlapping_bodies()
-		var currentRobot = robotInventory.keys()[index]
-		if not overlapping:
-			build_robot(currentRobot, gridmap_position)
-		else:
-			var result = overlapping[0]
-			var previousRobot = result.get_parent().get("Robot")
-			if previousRobot != currentRobot:
-				robotList.erase(result.get_parent())
-				result.get_parent().queue_free()
-				build_robot(currentRobot, gridmap_position)
-			
-				Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
 
-func build_belt(gridmap_position):
-	
-	if conveyor_belt_scene == null:
-		push_error("conveyor_belt_scene is not assigned in the Inspector!")
-		return
+
 
 # Demolish (remove) a structure
 
@@ -254,27 +203,15 @@ func action_structure_toggle():
 		index = wrap(index - 1, 0, robots.size())
 		Audio.play("sounds/toggle.ogg", -30)
 
-	update_structure()
+	update_structure(index)
 
 
-func update_structure(robotIndex = index):
-	# Clear previous structure preview in selector
-	index = robotIndex
-	for n in selector_container.get_children():
-		selector_container.remove_child(n)
-		
-	# Create new structure preview in selector
-	var _model = robotInventory.keys()[index].model.instantiate()
-	selector_container.add_child(_model)
-	_model.position.y += 0.25
-
-# Saving/load
 
 
 func _on_bot_inventory_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
 	update_structure(index)
 
-func update_structure():
+func update_structure(index):
 	# Clear previous structure preview in selector
 	for n in selector_container.get_children():
 		selector_container.remove_child(n)
@@ -299,4 +236,3 @@ func get_mesh(packed_scene):
 				if prop_name == "mesh":
 					var prop_value = scene_state.get_node_property_value(i, j)
 					return prop_value.duplicate()
-
