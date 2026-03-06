@@ -27,6 +27,7 @@ func _ready():
 	var model = robot.model.instantiate()
 	add_child(model)
 	
+	
 	var builder = get_tree().get_first_node_in_group("builder")
 	await get_tree().physics_frame
 	await get_tree().process_frame
@@ -35,6 +36,17 @@ func _ready():
 	var matching = self.robot.attributes.matchPersonality
 	print(rival, matching)
 	
+	
+func _physics_process(delta: float) -> void:
+	var overlap = farCollider.get_overlapping_areas()
+	var selector_overlap = false
+	for area in overlap:
+		if area.is_in_group("Selector"):
+			selector_overlap = true
+			print("Selected")
+			break
+	robotText.visible = selector_overlap
+
 func _process(delta: float) -> void:
 	
 	if camera:
@@ -110,11 +122,9 @@ func calculateMagnetism(allRobots: Array):
 	var match_name = RobotAttributes.personalityTrait.keys()[matching]
 	
 	if magnetModifier <0:
-		robotText.visible = true
+		
 		(robotText.mesh as TextMesh).text = "These %s bots are really overloading my microprocessor" % [rival_name]
 	elif magnetModifier >0:
-		robotText.visible = true
+		
 		(robotText.mesh as TextMesh).text = "I am really enjoying the positive resonance from these %s bots" % [match_name]
-	else:
-		robotText.visible = false
 	robot.attributes.outputSpeed = baseOutputSpeed + magnetModifier

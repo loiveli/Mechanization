@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://b4i7dfy6u3e8w" path="res://scripts/structure.gd" id="3_q5kvo"]
 [ext_resource type="PackedScene" uid="uid://xp0xvua5mghw" path="res://scenes/happy_reaction.tscn" id="4_xwnim"]
 [ext_resource type="PackedScene" uid="uid://8k2cpxsal31o" path="res://scenes/angry_reaction.tscn" id="5_q5kvo"]
+[ext_resource type="FontFile" uid="uid://d0cxd77jybrcn" path="res://fonts/lilita_one_regular.ttf" id="6_q5kvo"]
 
 [sub_resource type="Resource" id="Resource_5wdcj"]
 script = ExtResource("3_q5kvo")
@@ -14,15 +15,25 @@ metadata/_custom_type_script = "uid://b4i7dfy6u3e8w"
 [sub_resource type="BoxShape3D" id="BoxShape3D_v005l"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xwnim"]
-size = Vector3(1.9, 1, 1.9)
+size = Vector3(2, 2, 2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rcrfe"]
 size = Vector3(2.9, 1, 2.9)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q5kvo"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 0.5
+
 [sub_resource type="TextMesh" id="TextMesh_xwnim"]
-text = "These open source bots are really overloading my microprocessor"
+material = SubResource("StandardMaterial3D_q5kvo")
+font = ExtResource("6_q5kvo")
 font_size = 30
-autowrap_mode = 1
+uppercase = true
+autowrap_mode = 3
+pixel_size = 0.015
+curve_step = 0.8
+depth = 0.1
+width = 400.0
 
 [node name="Robot" type="Node3D" unique_id=360460994 node_paths=PackedStringArray("selfCollider", "nearCollider", "farCollider", "particleMagnet", "robotText")]
 script = ExtResource("1_rcrfe")
@@ -54,7 +65,7 @@ debug_color = Color(0.17029148, 0.63804704, 0.22994176, 0.41960785)
 
 [node name="MagnetRingFar" type="Area3D" parent="." unique_id=452190058]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MagnetRingFar" unique_id=1410236335]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -70,5 +81,9 @@ cull_mask = 4294966272
 size = Vector3(30, 30, 30)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=833255762]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+visible = false
 mesh = SubResource("TextMesh_xwnim")
+
+[connection signal="mouse_entered" from="MagnetRingNear" to="." method="_on_magnet_ring_near_mouse_entered"]
+[connection signal="mouse_exited" from="MagnetRingNear" to="." method="_on_magnet_ring_near_mouse_exited"]

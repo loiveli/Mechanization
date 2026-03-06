@@ -41,8 +41,8 @@ texture = ExtResource("6_805dx")
 
 [node name="Container" type="Node3D" parent="RobotBuilder/Selector" unique_id=208692768]
 
-[node name="SelectorCollider" type="Area3D" parent="RobotBuilder/Selector" unique_id=1643639339]
-collision_layer = 0
+[node name="SelectorCollider" type="Area3D" parent="RobotBuilder/Selector" unique_id=1643639339 groups=["Selector"]]
+collision_layer = 4
 collision_mask = 2
 
 [node name="SelectorCollisionShape" type="CollisionShape3D" parent="RobotBuilder/Selector/SelectorCollider" unique_id=4313590]
