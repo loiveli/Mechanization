@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://xp0xvua5mghw"]
+
+[ext_resource type="ArrayMesh" uid="uid://kb84n6ge0lm8" path="res://kenney_conveyor-kit/Models/OBJ format/arrow-basic.obj" id="1_68ikj"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ujkns"]
+lifetime_randomness = 0.3
+direction = Vector3(0, 0, 1)
+spread = 0.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.19999999
+scale_max = 2.0
+color = Color(0.35308796, 0.5548372, 1.347661e-06, 1)
+
+[node name="HappyReaction" type="GPUParticles3D" unique_id=252967306]
+amount = 20
+lifetime = 2.25
+explosiveness = 0.6
+trail_lifetime = 0.1
+process_material = SubResource("ParticleProcessMaterial_ujkns")
+draw_pass_1 = ExtResource("1_68ikj")

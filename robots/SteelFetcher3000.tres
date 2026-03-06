@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Robot" format=3 uid="uid://bo11xlm6h67i1"]
+
+[ext_resource type="Resource" uid="uid://c6s53hmvi8j7j" path="res://robots/SteelFetcher3000Attributes.tres" id="1_ra072"]
+[ext_resource type="PackedScene" uid="uid://d07wab7pdmyd8" path="res://kenney_conveyor-kit/Models/FBX format/robot-arm-b.fbx" id="2_un2yw"]
+[ext_resource type="Script" uid="uid://bnep7ssian6ke" path="res://scripts/Robot.gd" id="3_7wroq"]
+
+[resource]
+script = ExtResource("3_7wroq")
+model = ExtResource("2_un2yw")
+attributes = ExtResource("1_ra072")
+metadata/_custom_type_script = "uid://bnep7ssian6ke"

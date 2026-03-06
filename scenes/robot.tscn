@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://d1s28mlwbwx11" path="res://scripts/robotCode.gd" id="1_rcrfe"]
 [ext_resource type="PackedScene" uid="uid://5xetj5lntw3u" path="res://kenney_conveyor-kit/Models/FBX format/robot-arm-a.fbx" id="2_xwnim"]
 [ext_resource type="Script" uid="uid://b4i7dfy6u3e8w" path="res://scripts/structure.gd" id="3_q5kvo"]
-[ext_resource type="ArrayMesh" uid="uid://dphqgdj0vudqt" path="res://kenney_city-kit-industrial_1.0/Models/OBJ format/chimney-large.obj" id="4_xwnim"]
-[ext_resource type="ArrayMesh" uid="uid://kb84n6ge0lm8" path="res://kenney_conveyor-kit/Models/OBJ format/arrow-basic.obj" id="5_q5kvo"]
+[ext_resource type="PackedScene" uid="uid://xp0xvua5mghw" path="res://scenes/happy_reaction.tscn" id="4_xwnim"]
+[ext_resource type="PackedScene" uid="uid://8k2cpxsal31o" path="res://scenes/angry_reaction.tscn" id="5_q5kvo"]
 
 [sub_resource type="Resource" id="Resource_5wdcj"]
 script = ExtResource("3_q5kvo")
@@ -19,33 +19,15 @@ size = Vector3(1.9, 1, 1.9)
 [sub_resource type="BoxShape3D" id="BoxShape3D_rcrfe"]
 size = Vector3(2.9, 1, 2.9)
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_e20l1"]
-lifetime_randomness = 0.3
-particle_flag_align_y = true
-direction = Vector3(0, 1, 0)
-initial_velocity_max = 150.54
-gravity = Vector3(0, 0, 0)
-scale_min = 0.099999994
-scale_max = 0.79999995
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ujkns"]
-lifetime_randomness = 0.3
-particle_flag_align_y = true
-direction = Vector3(0, 1, 0)
-initial_velocity_max = 150.54
-gravity = Vector3(0, 0, 0)
-scale_min = 0.19999999
-scale_max = 2.0
-color = Color(0.35308796, 0.5548372, 1.347661e-06, 1)
-
-[node name="Robot" type="Node3D" unique_id=360460994 node_paths=PackedStringArray("selfCollider", "nearCollider", "farCollider", "angryReaction", "happyReaction")]
+[node name="Robot" type="Node3D" unique_id=360460994 node_paths=PackedStringArray("selfCollider", "nearCollider", "farCollider", "particleMagnet")]
 script = ExtResource("1_rcrfe")
 robot = SubResource("Resource_5wdcj")
 selfCollider = NodePath("RobotCollider")
 nearCollider = NodePath("MagnetRingNear")
 farCollider = NodePath("MagnetRingFar")
-angryReaction = NodePath("AngryReaction")
-happyReaction = NodePath("HappyReaction")
+angryReaction = ExtResource("5_q5kvo")
+happyReaction = ExtResource("4_xwnim")
+particleMagnet = NodePath("ParticleMagnet")
 
 [node name="RobotCollider" type="StaticBody3D" parent="." unique_id=1612115083]
 collision_layer = 2
@@ -73,22 +55,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_rcrfe")
 debug_color = Color(0.54081213, 0.5659845, 0.01717671, 0.41960785)
 
-[node name="AngryReaction" type="GPUParticles3D" parent="." unique_id=604382342]
-emitting = false
-amount = 20
-lifetime = 0.2
-one_shot = true
-explosiveness = 0.6
-trail_lifetime = 0.09999999999999999
-process_material = SubResource("ParticleProcessMaterial_e20l1")
-draw_pass_1 = ExtResource("4_xwnim")
-
-[node name="HappyReaction" type="GPUParticles3D" parent="." unique_id=1833317933]
-emitting = false
-amount = 20
-lifetime = 0.2
-one_shot = true
-explosiveness = 0.6
-trail_lifetime = 0.09999999999999999
-process_material = SubResource("ParticleProcessMaterial_ujkns")
-draw_pass_1 = ExtResource("5_q5kvo")
+[node name="ParticleMagnet" type="GPUParticlesAttractorBox3D" parent="." unique_id=1568497550]
+layers = 0
+strength = 128.0
+attenuation = 0.012259123
+directionality = 1.0
+cull_mask = 4294966272
+size = Vector3(30, 30, 30)

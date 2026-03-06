@@ -2,16 +2,49 @@
 
 [ext_resource type="Script" uid="uid://b66i11hp1v6kv" path="res://scripts/robotBuilder.gd" id="1_pspos"]
 [ext_resource type="Script" uid="uid://bnep7ssian6ke" path="res://scripts/Robot.gd" id="2_pspos"]
-[ext_resource type="Resource" uid="uid://bo11xlm6h67i1" path="res://robots/SteelFetcher3000.tres" id="3_pspos"]
-[ext_resource type="Resource" uid="uid://bwxpws87c0nt2" path="res://robots/SteelDiggerV10.tres" id="4_yutgn"]
-[ext_resource type="Resource" uid="uid://co4ww2t5ttwfc" path="res://robots/ArmBuilder.tres" id="5_pspos"]
+[ext_resource type="Resource" uid="uid://votnc1woidre" path="res://robots/SteelMiner2030Edition.tres" id="3_6se72"]
+[ext_resource type="Resource" uid="uid://cca1f7dci0gbb" path="res://robots/LegMaker3000.tres" id="3_fxepc"]
+[ext_resource type="Script" uid="uid://b8q0ek5wna3j2" path="res://scripts/RobotAttributes.gd" id="3_yutgn"]
+[ext_resource type="Resource" uid="uid://dp0h15a0elv57" path="res://robots/LegBuilderV10.tres" id="4_pspos"]
 [ext_resource type="Texture2D" uid="uid://cbk07cxgshg26" path="res://sprites/selector.png" id="6_805dx"]
+[ext_resource type="Resource" uid="uid://m8lescllbow4" path="res://robots/ItemMover1000.tres" id="6_bc2ja"]
+[ext_resource type="PackedScene" uid="uid://dg1dvn64bdkbj" path="res://kenney_conveyor-kit/Models/GLB format/cover-window.glb" id="7_805dx"]
 [ext_resource type="Environment" uid="uid://jbptgqvstei3" path="res://scenes/main-environment.tres" id="8_5qykb"]
+[ext_resource type="PackedScene" uid="uid://dkluhe7uak5po" path="res://kenney_conveyor-kit/Models/FBX format/scanner-low.fbx" id="8_dwpnh"]
 [ext_resource type="Texture2D" uid="uid://bng0d1sou7c8a" path="res://sprites/coin.png" id="9_kfghr"]
 [ext_resource type="FontFile" uid="uid://d0cxd77jybrcn" path="res://fonts/lilita_one_regular.ttf" id="10_qnypn"]
 [ext_resource type="Texture2D" uid="uid://ciwbdik3tmxtp" path="res://sprites/instructions.png" id="11_8x6vv"]
 [ext_resource type="Script" uid="uid://blmhvv18m7p83" path="res://scenes/bot_inventory.gd" id="11_pspos"]
 [ext_resource type="AudioStream" uid="uid://wvfsgkl8qob6" path="res://sounds/ambience.ogg" id="12_mqxck"]
+
+[sub_resource type="Resource" id="Resource_5qykb"]
+script = ExtResource("3_yutgn")
+name = "RobotCompiler_BETA"
+outputSpeed = 1
+output = 5
+input = Array[int]([1, 2, 3, 4])
+personality = 2
+metadata/_custom_type_script = "uid://b8q0ek5wna3j2"
+
+[sub_resource type="Resource" id="Resource_kfghr"]
+script = ExtResource("2_pspos")
+model = ExtResource("7_805dx")
+attributes = SubResource("Resource_5qykb")
+metadata/_custom_type_script = "uid://bnep7ssian6ke"
+
+[sub_resource type="Resource" id="Resource_qnypn"]
+script = ExtResource("3_yutgn")
+name = "ArmProducer"
+outputSpeed = 1
+output = 2
+input = Array[int]([0])
+metadata/_custom_type_script = "uid://b8q0ek5wna3j2"
+
+[sub_resource type="Resource" id="Resource_8x6vv"]
+script = ExtResource("2_pspos")
+model = ExtResource("8_dwpnh")
+attributes = SubResource("Resource_qnypn")
+metadata/_custom_type_script = "uid://bnep7ssian6ke"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_o177o"]
 size = Vector3(0.8, 0.8, 0.5)
@@ -27,7 +60,8 @@ shadow_color = Color(0, 0, 0, 0.392157)
 
 [node name="RobotBuilder" type="Node3D" parent="." unique_id=989834716 node_paths=PackedStringArray("selector", "selector_container", "view_camera", "selector_collider")]
 script = ExtResource("1_pspos")
-robots = Array[ExtResource("2_pspos")]([ExtResource("3_pspos"), ExtResource("4_yutgn"), ExtResource("5_pspos")])
+robots = Array[ExtResource("2_pspos")]([ExtResource("3_6se72"), ExtResource("3_fxepc"), ExtResource("4_pspos"), SubResource("Resource_kfghr"), SubResource("Resource_8x6vv")])
+conveyorBelt = ExtResource("6_bc2ja")
 selector = NodePath("Selector")
 selector_container = NodePath("Selector/Container")
 view_camera = NodePath("../View/Camera")

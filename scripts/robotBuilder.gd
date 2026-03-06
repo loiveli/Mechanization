@@ -5,7 +5,7 @@ extends Node3D
 
 
 @export var robotInventory: Dictionary[Robot,int]
-@export var conveyorBelt: Robot
+
 var robotList: Array[Node3D]
 
 signal robot_spawned
@@ -42,10 +42,10 @@ var item_sources = [
 ]
 
 func _ready():
-	robotInventory[conveyorBelt] = 1000
 	print("selector_container = ", selector_container)
 	print("selector = ", selector)
 	print("view_camera = ", view_camera)
+	add_to_group("builder")
 	map = DataMap.new()
 	plane = Plane(Vector3.UP, Vector3.ZERO)
 
@@ -126,7 +126,7 @@ func action_build(gridmap_position):
 			if not blocking:
 				build_belt(gridmap_position)
 		else:
-			var currentRobot = robots[index]
+			var currentRobot = robotInventory.keys()[index]
 			if not blocking:
 				build_robot(currentRobot, gridmap_position)
 			else:
@@ -141,11 +141,12 @@ func build_robot(currentRobot, gridmap_position):
 	var robot = preload("res://scenes/robot.tscn").instantiate()
 	robot.initRobot(currentRobot)
 	add_child(robot)
-	robotList.append(robot) 
-	for bot in robotList:
-		bot.calculateMagentism()
+	robotList.append(robot)
 	robot.transform.origin = gridmap_position
 	robot.rotation = selector.rotation
+	await get_tree().physics_frame
+	for r in robotList:
+		r.calculateMagnetism(robotList)
 
 
 func build_belt(gridmap_position):
@@ -211,8 +212,9 @@ func action_structure_toggle():
 func _on_bot_inventory_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
 	update_structure(index)
 
-func update_structure(index):
+func update_structure(robotIndex):
 	# Clear previous structure preview in selector
+	index = robotIndex
 	for n in selector_container.get_children():
 		selector_container.remove_child(n)
 

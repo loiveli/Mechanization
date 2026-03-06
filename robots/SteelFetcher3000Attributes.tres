@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="RobotAttributes" format=3 uid="uid://c6s53hmvi8j7j"]
+
+[ext_resource type="Script" uid="uid://b8q0ek5wna3j2" path="res://scripts/RobotAttributes.gd" id="1_m31r8"]
+
+[resource]
+script = ExtResource("1_m31r8")
+name = "SteelFetcher3000"
+outputSpeed = 1
+metadata/_custom_type_script = "uid://b8q0ek5wna3j2"
