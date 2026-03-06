@@ -23,8 +23,8 @@ func setup(world_position: Vector3) -> void:
 	area_shape.shape = mesh_instance.mesh.create_convex_shape()
 	area.add_child(area_shape)
 	add_child(area)
-
-"""
+	
+	
 func _physics_process(delta: float) -> void:
 	if _collected:
 		return
