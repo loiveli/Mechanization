@@ -30,7 +30,6 @@ selector = NodePath("Selector")
 selector_container = NodePath("Selector/Container")
 view_camera = NodePath("../View/Camera")
 selector_collider = NodePath("Selector/SelectorCollider")
-conveyor_belt_scene = ExtResource("10_tchaa")
 
 [node name="Selector" type="Node3D" parent="Builder" unique_id=61547494]
 
@@ -50,6 +49,8 @@ shape = SubResource("BoxShape3D_o177o")
 [node name="Robot" parent="Builder" unique_id=360460994 instance=ExtResource("7_o177o")]
 
 [node name="item" parent="Builder" unique_id=744977598 instance=ExtResource("8_4rwsw")]
+collision_layer = 3
+collision_mask = 3
 
 [node name="IronSource" parent="Builder" unique_id=1528772546 instance=ExtResource("10_oh8fy")]
 

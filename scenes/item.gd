@@ -7,17 +7,23 @@ var on_conveyor: bool = false
 var conveyor_direction: Vector3 = Vector3.ZERO
 var _collected: bool = false
 
-func setup(world_position: Vector3) -> void:
+func setup(world_position: Vector3, color: Color = Color.WHITE) -> void:
 	global_position = world_position
 
 	var mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = get_mesh(model)
+	
+	if color != Color.WHITE:
+		var mat = StandardMaterial3D.new()
+		mat.albedo_color = color
+		mesh_instance.material_override = mat
+	
 	add_child(mesh_instance)
 
 	var shape = CollisionShape3D.new()
 	shape.shape = mesh_instance.mesh.create_convex_shape()
 	add_child(shape)
-	
+
 	var area = Area3D.new()
 	var area_shape = CollisionShape3D.new()
 	area_shape.shape = mesh_instance.mesh.create_convex_shape()

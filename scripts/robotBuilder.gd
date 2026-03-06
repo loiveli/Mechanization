@@ -42,7 +42,7 @@ var conveyor_belt_scene = preload("res://scenes/conveyor_belt.tscn")
 
 
 var item_sources = [
-	{ "pos": Vector3(-4, 0, 0), "dir": Vector3(0, 0, -1) },
+	{ "pos": Vector3(-5, 0, 2), "dir": Vector3(0, 0, -1) },
 ]
 
 func _ready():
