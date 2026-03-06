@@ -2,6 +2,10 @@ extends Node3D
 
 @export var robots: Array[Robot] = []
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:scripts/robotBuilder.gd
+>>>>>>> c3f420336f7f7c3b90f5e9f22b2308da524fdea7
 
 @export var robotInventory: Dictionary[Robot,int]
 @export var conveyorBelt: Robot
@@ -10,6 +14,7 @@ var robotList: Array[Node3D]
 signal robot_spawned
 
 
+<<<<<<< HEAD
 @export var robotInventory: Dictionary[Robot,int]
 @export var conveyorBelt: Robot
 var robotList: Array[Node3D]
@@ -19,6 +24,8 @@ signal robot_spawned
 var map: DataMap
 
 var index: int = -1 # Index of robot being built
+
+
 
 enum PlacementMode { ROBOT, BELT }
 var placement_mode: PlacementMode = PlacementMode.ROBOT
@@ -30,9 +37,26 @@ var placement_mode: PlacementMode = PlacementMode.ROBOT
 
 
 
+var plane:Plane # Used for raycasting mouse
 @export var conveyor_belt_scene: PackedScene
 
 var plane: Plane
+
+# Item source creation
+const IronSourceScene = preload("res://scenes/iron_source.tscn")
+const ItemEntityScene = preload("res://scenes/item.tscn")
+const IronResource = preload("res://resources/iron.tres")
+
+var item_sources = [
+	{ "pos": Vector3(-4, 0, 0), "dir": Vector3(0, 0, -1) },
+]
+
+
+func _ready():
+	robotInventory[conveyorBelt] = 1000
+	print("selector_container = ", selector_container)
+	print("selector = ", selector)
+	print("view_camera = ", view_camera)
 
 # Item source creation
 const IronSourceScene = preload("res://scenes/iron_source.tscn")
@@ -58,16 +82,32 @@ func _ready():
 		
 		
 	# Item Sources
+		var id = mesh_library.get_last_unused_item_id()
+		mesh_library.create_item(id)
+		mesh_library.set_item_mesh(id, get_mesh(robot.model))
+		mesh_library.set_item_mesh_transform(id, Transform3D())
+
+
 	for data in item_sources:
 		var source = IronSourceScene.instantiate()
 		add_child(source)
 		source.setup(data.pos, data.dir)
+
+
 	
 func _unhandled_input(event: InputEvent) -> void:
 	var gridmap_position = getGridmapPosition()
 	action_build(gridmap_position)
 	
 func getGridmapPosition():
+
+
+	update_structure()
+
+func _process(delta):
+	action_rotate()
+	action_structure_toggle()
+	action_toggle_placement_mode()
 	var world_position = plane.intersects_ray(
 		view_camera.project_ray_origin(get_viewport().get_mouse_position()),
 		view_camera.project_ray_normal(get_viewport().get_mouse_position()))
@@ -88,9 +128,11 @@ func _process(delta):
 	
 	
 	selector.position = lerp(selector.position, gridmap_position, min(delta * 40, 1.0))
-	
-	action_build(gridmap_position)
-	action_demolish(gridmap_position)
+
+
+	action_demolish()
+
+
 
 func action_toggle_placement_mode():
 	if Input.is_action_just_pressed("toggle_belt_mode"):
@@ -135,6 +177,7 @@ func build_robot(currentRobot, gridmap_position):
 	robot.transform.origin = gridmap_position
 	robot.rotation = selector.rotation
 
+
 func build_belt(gridmap_position):
 	
 	if conveyor_belt_scene == null:
@@ -151,6 +194,7 @@ func build_belt(gridmap_position):
 	belt.init_belt(direction)
 
 	Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
+
 func action_build(gridmap_position):
 	if index<0:
 		return
@@ -168,6 +212,12 @@ func action_build(gridmap_position):
 				build_robot(currentRobot, gridmap_position)
 			
 				Audio.play("sounds/placement-a.ogg, sounds/placement-b.ogg, sounds/placement-c.ogg, sounds/placement-d.ogg", -20)
+
+func build_belt(gridmap_position):
+	
+	if conveyor_belt_scene == null:
+		push_error("conveyor_belt_scene is not assigned in the Inspector!")
+		return
 
 # Demolish (remove) a structure
 
@@ -187,6 +237,9 @@ func action_rotate():
 		selector.rotate_y(deg_to_rad(90))
 		Audio.play("sounds/rotate.ogg", -30)
 
+
+
+
 # Toggle between structures to build
 
 func action_structure_toggle():
@@ -203,7 +256,23 @@ func action_structure_toggle():
 
 	update_structure()
 
-# Update the structure visual in the 'cursor'
+
+func update_structure(robotIndex = index):
+	# Clear previous structure preview in selector
+	index = robotIndex
+	for n in selector_container.get_children():
+		selector_container.remove_child(n)
+		
+	# Create new structure preview in selector
+	var _model = robotInventory.keys()[index].model.instantiate()
+	selector_container.add_child(_model)
+	_model.position.y += 0.25
+
+# Saving/load
+
+
+func _on_bot_inventory_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+	update_structure(index)
 
 func update_structure():
 	# Clear previous structure preview in selector
@@ -220,8 +289,14 @@ func update_structure():
 		selector_container.add_child(_model)
 		_model.position.y += 0.25
 
-# Saving/load
 
+func get_mesh(packed_scene):
+	var scene_state: SceneState = packed_scene.get_state()
+	for i in range(scene_state.get_node_count()):
+		if scene_state.get_node_type(i) == "MeshInstance3D":
+			for j in scene_state.get_node_property_count(i):
+				var prop_name = scene_state.get_node_property_name(i, j)
+				if prop_name == "mesh":
+					var prop_value = scene_state.get_node_property_value(i, j)
+					return prop_value.duplicate()
 
-func _on_bot_inventory_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
-	update_structure(index)
